@@ -1,0 +1,12 @@
+install:
+http://flask.pocoo.org/docs/0.12/installation/#virtualenv
+
+MySQLdb:
+http://blog.csdn.net/a657941877/article/details/8944683
+easy_install mysql-python  
+
+quickstart:
+http://flask.pocoo.org/docs/0.12/quickstart/
+
+set up server:
+http://www.jianshu.com/p/be9dd421fb8d

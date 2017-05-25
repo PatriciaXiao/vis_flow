@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script src="js/echarts.js"></script>
+</head>
+<body>
+    <div id="main" style="width: 600px;height:400px;"></div>
+    <script type="text/javascript">
+
+    var symbolSize = 20;
+    var data = [[15, 0], [-50, 10], [-56.5, 20], [-46.5, 30], [-22.1, 40]];
+    var data2 = [
+        {name: 'node1', value: [15, 0]},
+        {name: 'node1', value: [-50, 10]}
+    ];
+
+    var myChart = echarts.init(document.getElementById('main'));
+
+    var myPath = 'image://img/test_image.jpg';
+
+    myChart.setOption({
+        tooltip: {
+            formatter: function (params) {
+                return 'hello';//'X: ' + params.data[0].value.toFixed(2) + '<br>Y: ' + params.data[1].value.toFixed(2);
+            }
+        },
+       
+        xAxis: {
+            min: -100,
+            max: 80,
+            type: 'value',
+            axisLine: {onZero: false},
+            show: false
+        },
+        yAxis: {
+            min: -30,
+            max: 60,
+            type: 'value',
+            axisLine: {onZero: false},
+            show: false
+        },
+       
+        series: [
+            {
+                id: 'a',
+                type: 'line',
+                smooth: true,
+                symbolSize: symbolSize,
+                data: data2
+            },
+            // elements
+            {
+                name: 'points',
+                type: 'effectScatter',
+                //coordinateSystem: 'catesian',
+                zlevel: 1,
+                rippleEffect: {
+                    brushType: 'stroke'
+                },
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'right',
+                        formatter: 'hi?'
+                    }
+                },
+                symbolSize: symbolSize,
+                itemStyle: {
+                    normal: {
+                        color: '#000',
+                        opacity: 0.8,
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowOffsetY: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                },
+                data: data2
+            },
+            // line
+            /*
+            {
+                name: 'lines',
+                type: 'lines',
+                zlevel: 2,
+                coordinateSystem: 'grid',
+                symbol: ['none', 'none'],
+                symbolSize: 10,
+                effect: {
+                    show: true,
+                    period: 6,
+                    trailLength: 0,
+                    symbol: myPath,
+                    symbolSize: 15
+                },
+                lineStyle: {
+                    normal: {
+                        color: '#000',
+                        width: 1,
+                        opacity: 0.6,
+                        curveness: 0.2
+                    }
+                },
+                data: [
+                    {
+                        fromName: 'node1',
+                        toName: 'node2',
+                        coords: [[15, 0], [-15, 10]]
+                    }
+                ]
+            }
+            */
+        ]
+    });
+
+</script>
+</body>
+</html>
