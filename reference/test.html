@@ -174,7 +174,7 @@ var GZData = [
 
 var DEBUG = false;
 
-var myPath = 'image://img/test_image.jpg';
+var myPath = 'image://img/test_image.jpg'; //'path://jskjgh';// debug
 
 var convertData = function (data) {
     var res = [];
@@ -326,7 +326,7 @@ var series = [];
         {
             name: '北京 Top10',
             type: 'lines',
-            zlevel: 1,
+            zlevel: 2, //1,
             effect: {
                 show: true,
                 period: 1, //6, // speed of ray
@@ -337,12 +337,12 @@ var series = [];
             lineStyle: {
                 normal: {
                     color: color[i],
-                    width: 0,
+                    width: 0, //0,
                     curveness: 0.2
                 }
             },
             data: [{
-                coords: [[121.4648,31.2891], [107.7539,30.1904]]
+                coords: [[119.4543,31.5582], [107.7539,30.1904]]
             }]
         }
     );
@@ -351,7 +351,7 @@ var series = [];
         {
             name: '北京 Top10',
             type: 'lines',
-            zlevel: 2,
+            zlevel: 1, //2,
             // symbol: ['none', 'arrow'],
             symbol: ['none', 'none'],
             symbolSize: 10,
@@ -365,13 +365,13 @@ var series = [];
             lineStyle: {
                 normal: {
                     color: color[0],
-                    width: 1,
+                    width: 2, //1,
                     opacity: 0.6,
                     curveness: 0.2
                 }
             },
             data: [{
-                coords: [[121.4648,31.2891], [107.7539,30.1904]]
+                coords: [[119.4543,31.5582], [107.7539,30.1904]]
             }]
         }
     );
@@ -387,24 +387,45 @@ option = {
     backgroundColor: backgroundColor,
     title : {
         text: '点线图测试效果',
-        subtext: '基于中国地图',
+        subtext: '基于世界地图',
         left: 'center',
         textStyle : {
             color: '#fff'
         }
     },
     tooltip : {
-        trigger: 'item'
+        trigger: 'item',
     },
     legend: {
         orient: 'vertical',
         top: 'bottom',
         left: 'right',
-        data:['北京 Top10', '上海 Top10', '广州 Top10'],
+        //data:['北京 Top10', '上海 Top10', '广州 Top10'],
+        
+        data:[
+            {name: '北京 Top10', icon: 'circle'}, 
+            {name: '上海 Top10', textStyle: {color: 'red'}}, 
+            {name: '广州 Top10'}
+        ],
+
         textStyle: {
             color: '#fff'
         },
         selectedMode: 'multiple', //'single'
+        selected: {
+            '北京 Top10': false,
+            '上海 Top10': false,
+            '广州 Top10': true
+        },
+        // 使用字符串模板，模板变量为图例名称 {name}
+        // formatter: 'Legend {name}'
+        // 使用回调函数
+        
+        formatter: function (dat) {
+            // console.log(dat)
+            return 'Legend ' + dat;
+        }
+        // show: false
     },
     geo: {
         map: 'world',//'coordinateMap', //'china',//'none',
@@ -430,6 +451,7 @@ option = {
 };
 if (option && typeof option === "object") {
     myChart.setOption(option, true);
+    console.log(myChart)
 }
        </script>
    </body>

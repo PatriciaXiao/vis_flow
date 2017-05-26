@@ -8,5 +8,8 @@ easy_install mysql-python
 quickstart:
 http://flask.pocoo.org/docs/0.12/quickstart/
 
+eCharts:
+http://echarts.baidu.com/option.html#legend
+
 set up server:
 http://www.jianshu.com/p/be9dd421fb8d
