@@ -13,3 +13,5 @@ http://echarts.baidu.com/option.html#legend
 
 set up server:
 http://www.jianshu.com/p/be9dd421fb8d
+
+http://echarts.baidu.com/demo.html#scatter-map-brush
