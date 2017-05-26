@@ -451,7 +451,8 @@ var option = {
         data:[
             {name: '北京 Top10', icon: 'circle'}, 
             {name: '上海 Top10', textStyle: {color: 'red'}}, 
-            {name: '广州 Top10'}
+            {name: '广州 Top10'},
+            {name: '漏斗图'}
         ],
 
         textStyle: {
