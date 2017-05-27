@@ -7,7 +7,10 @@ dom.style.width = ($(window).width()) + "px";
 
 // assets
 var myChart = echarts.init(dom);
+var MAX_INT = 10000;
 var myPath = 'image://static/test_image.jpg';
+var backgroundColor = '#444455';//'#404a59';
+var backgroundColor_rgb = '#445';
 
 // for debugging purpose
 var DEBUG = false;
@@ -202,20 +205,21 @@ var series = [];
                 show: true,
                 period: 6, //1, //6, // speed
                 trailLength: 0.7,
-                color: '#000', // '#fff',
+                color:  backgroundColor, //'#000', // '#fff',
                 symbolSize: 3
             },
             lineStyle: {
                 normal: {
-                    color: '#000',//color[i],
-                    width: 0,
-                    curveness: 0
+                    color: backgroundColor,  //'#000',//color[i],
+                    width: 1,
+                    curveness: 0,
+                    opacity: 0,
                 }
             },
             data: [{
-                fromName: 'leftright',
-                toName: 'leftright',
-                coords: [[-200, 200], [200, 200]]
+                fromName: 'inf_far',
+                toName: 'inf_far_2',
+                coords: [[-1 * MAX_INT, -1 * MAX_INT], [-1 * MAX_INT + 1, -1 * MAX_INT + 1]]
             }]
         }
     );
@@ -230,22 +234,25 @@ var series = [];
             symbolSize: 10,
             lineStyle: {
                 normal: {
-                    color: '#ffffff',//color[i],
+                    color: backgroundColor, //'#ffffff',//color[i],
                     width: 1,
                     opacity: 0.6,
                     curveness: 0
                 }
             },
+            /*
             tooltip: {
                 formatter: function (params) {
                     // console.log(params)
                     return 'hello I am the line from ' + params.data.fromName + " to " + params.data.toName;
                 }
             },
+            */
+
             data: [{
-                fromName: 'leftright',
-                toName: 'leftright',
-                coords: [[-200, 200], [200, 200]]
+                fromName: 'inf_far',
+                toName: 'inf_far_2',
+                coords: [[-1 * MAX_INT, -1 * MAX_INT], [-1 * MAX_INT + 1, -1 * MAX_INT + 1]]
             }]
         }
     );
@@ -308,11 +315,6 @@ var series = [];
         }
     );
 
-/*
-if (DEBUG)
- console.log(series)
-*/
-var backgroundColor = '#404a59';
 var option = {
     backgroundColor: backgroundColor,
     /*
