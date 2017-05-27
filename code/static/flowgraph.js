@@ -215,7 +215,7 @@ var series = [];
             data: [{
                 fromName: 'leftright',
                 toName: 'leftright',
-                coords: [[-200, 90], [200, 90]]
+                coords: [[-200, 200], [200, 200]]
             }]
         }
     );
@@ -228,13 +228,6 @@ var series = [];
             // symbol: ['none', 'arrow'],
             symbol: ['none', 'none'],
             symbolSize: 10,
-            effect: {
-                show: true,
-                period: 6,
-                trailLength: 0,
-                symbol: myPath,
-                symbolSize: 15
-            },
             lineStyle: {
                 normal: {
                     color: '#ffffff',//color[i],
@@ -252,7 +245,7 @@ var series = [];
             data: [{
                 fromName: 'leftright',
                 toName: 'leftright',
-                coords: [[-200, 90], [200, 90]]
+                coords: [[-200, 200], [200, 200]]
             }]
         }
     );
