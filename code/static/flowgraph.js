@@ -416,7 +416,11 @@ var series = [];
                 {value: 10, name: '订单'},
                 {value: 90, name: '点击'},
                 {value: 100, name: '展现'}
-            ]
+            ],
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c}%"
+            },
         }
     );
 
@@ -447,7 +451,6 @@ var option = {
         top: 'bottom',
         left: 'right',
         //data:['北京 Top10', '上海 Top10', '广州 Top10'],
-        
         data:[
             {name: '北京 Top10', icon: 'circle'}, 
             {name: '上海 Top10', textStyle: {color: 'red'}}, 
