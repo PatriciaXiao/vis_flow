@@ -2,15 +2,17 @@
 <html style="height: 100%">
    <head>
        <meta charset="utf-8">
+       <title>用户行为追踪</title>
+       <link rel="icon" href={{url_for('static', filename="favicon.ico")}} />
        <link rel="stylesheet" type="text/css" media="screen" href={{url_for('static', filename="bootstrap-datetimepicker.min.css")}}>
-       <link rel="stylesheet" href={{url_for('static', filename="bootstrap-combined.min.css")}}>
-       
+       <link rel="stylesheet" href={{url_for('static', filename="bootstrap-combined.min.css")}}>     
        <link rel="stylesheet" href={{url_for('static', filename="bootstrap.min.css")}}>
        <link rel="stylesheet" href={{url_for('static', filename="income_flow.css")}}>
        <script type="text/javascript" src={{url_for('static', filename="echarts.min.js")}}></script>
        <script type="text/javascript" src={{url_for('static', filename="coordinateMap.js")}}></script>
        <script type="text/javascript" src={{url_for('static', filename="jquery.min.js")}}></script>
        <script type="text/javascript" src={{url_for('static', filename="bootstrap.min.js")}}></script>
+       <!-- this has to be the last one included -->
        <script type="text/javascript" src={{url_for('static', filename="bootstrap-datetimepicker.min.js")}}></script>
    </head>
    <body>
