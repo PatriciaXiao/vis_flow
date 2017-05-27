@@ -8,9 +8,16 @@ dom.style.width = ($(window).width()) + "px";
 // assets
 var myChart = echarts.init(dom);
 var MAX_INT = 10000;
+var coordRange = {
+    left: -200,
+    right: 160,
+    top: 90,
+    bottom: -70
+}
 var myPath = 'image://static/test_image.jpg';
 var backgroundColor = '#444455';//'#404a59';
 var backgroundColor_rgb = '#445';
+var colorSet = ['#a6c84c', '#ffa022', '#46bee9', '#e9967a', '#ffd700', '#dda0dd'];
 
 // for debugging purpose
 var DEBUG = false;
@@ -19,35 +26,34 @@ function debug(val){
     return val;
 }
 
+// variables to be used
+// ['groupName', groupData]
+// groupData: [{name: 'startPointName'}, {name: 'endPointName', value: value of the line}]
+var mergedGroups = [];
+var series = [];
+var option = {};
+
 // coordinate range [(-200, 200), (-70, 90)]
+// mapping data
 var coordMap = {
-    '上海': [200, 90], //[121.4648,31.2891],
-    '北京': [-200,-70], //[116.4551,40.2539],
-    '广州': [-200, 90],//[113.5107,23.2196],
-    '重庆': [107.7539,30.1904],
-    '常州': [119.4543,31.5582]
+    'corner_topright': [coordRange.right, coordRange.top], //[121.4648,31.2891],
+    'corner_bottomleft': [coordRange.left,coordRange.bottom], //[116.4551,40.2539],
+    'corner_topleft': [coordRange.left, coordRange.top],//[113.5107,23.2196],
+    'corner_bottomright': [coordRange.right, coordRange.bottom],
+    'center': [(coordRange.left + coordRange.right) / 2. , (coordRange.top + coordRange.bottom) / 2.]
 };
+// could add / modify its contents like this:
+// coordMap['center'] = [(coordRange.left + coordRange.right) / 2. , (coordRange.top + coordRange.bottom) / 2.];
 
-var BJData = [
-    [{name:'北京'}, {name:'上海',value:95}],
-    [{name:'北京'}, {name:'广州',value:90}],
-    [{name:'北京'}, {name:'重庆',value:20}],
-    [{name:'北京'}, {name:'常州',value:10}]
-];
-
-var SHData = [
-    [{name:'上海'},{name:'广州',value:80}],
-    [{name:'上海'},{name:'重庆',value:50}],
-    [{name:'上海'},{name:'北京',value:30}],
-];
-
-var GZData = [
-    [{name:'广州'},{name:'重庆',value:70}],
-    [{name:'广州'},{name:'常州',value:40}],
-    [{name:'广州'},{name:'北京',value:30}],
-];
-
-// input 
+// functions 
+var mergeGroups = function(lst_groups) {
+    var res = [];
+    var nGroups = lst_groups.length;
+    for (var i = 0; i < nGroups; i++) {
+        res.push(lst_groups[i]);
+    }
+    return res;
+}
 var convertData = function (data) {
     var res = [];
     for (var i = 0; i < data.length; i++) {
@@ -58,6 +64,7 @@ var convertData = function (data) {
             res.push({
                 fromName: dataItem[0].name, // could be commented out
                 toName: dataItem[1].name,   // also could be
+                value: dataItem[1].value,
                 coords: [fromCoord, toCoord]
             });
         }
@@ -65,9 +72,29 @@ var convertData = function (data) {
     return res;
 };
 
-var color = ['#a6c84c', '#ffa022', '#46bee9'];
-var series = [];
-[['北京', BJData], ['上海', SHData], ['广州', GZData]].forEach(function (item, i) {
+// prepare data
+var Group1 = [
+    [{name:'corner_bottomleft'}, {name:'corner_topright',value:95}],
+    [{name:'corner_bottomleft'}, {name:'corner_topleft',value:90}],
+    [{name:'corner_bottomleft'}, {name:'corner_bottomright',value:20}],
+    [{name:'corner_bottomleft'}, {name:'center',value:10}]
+];
+
+var Group2 = [
+    [{name:'corner_topright'},{name:'corner_topleft',value:80}],
+    [{name:'corner_topright'},{name:'corner_bottomright',value:50}],
+    [{name:'corner_topright'},{name:'corner_bottomleft',value:30}],
+];
+
+var Group3 = [
+    [{name:'corner_topleft'},{name:'corner_bottomright',value:70}],
+    [{name:'corner_topleft'},{name:'center',value:40}],
+    [{name:'corner_topleft'},{name:'corner_bottomleft',value:30}],
+];
+
+mergedGroups = [['Group1', Group1], ['Group2', Group2], ['Group3', Group3]];
+
+mergedGroups.forEach(function (item, i) {
     series.push(
         // the "flow"
         {
@@ -83,7 +110,7 @@ var series = [];
             },
             lineStyle: {
                 normal: {
-                    color: color[i],
+                    color: colorSet[i],
                     width: 0,
                     curveness: 0.2
                 }
@@ -107,7 +134,7 @@ var series = [];
             },
             lineStyle: {
                 normal: {
-                    color: color[i],
+                    color: colorSet[i],
                     width: 1,
                     opacity: 0.6,
                     curveness: 0.2
@@ -116,7 +143,7 @@ var series = [];
             tooltip: {
                 formatter: function (params) {
                     // console.log(params)
-                    return 'hello I am the line from ' + params.data.fromName + " to " + params.data.toName;
+                    return 'hello I am the line from ' + params.data.fromName + " to " + params.data.toName + " with value " + params.data.value;
                 }
             },
             data: convertData(item[1])
@@ -135,7 +162,7 @@ var series = [];
                     show: true,
                     position: 'right',
                     // formatter: '{b}'
-                    // formatter: '{b}' // {a} refers to 北京 Top 10 here
+                    // formatter: '{b}' // {a} refers to corner_bottomleft Top 10 here
                     formatter: '{b}'
                 }
             },
@@ -144,7 +171,7 @@ var series = [];
             },
             itemStyle: {
                 normal: {
-                    color: color[i]
+                    color: colorSet[i]
                 }
             },
             data: item[1].map(function (dataItem) {
@@ -171,7 +198,7 @@ var series = [];
                     show: true,
                     position: 'right',
                     // formatter: '{b}'
-                    // formatter: '{b}' // {a} refers to 北京 Top 10 here
+                    // formatter: '{b}' // {a} refers to corner_bottomleft Top 10 here
                     formatter: item[0]//'{a}'
                 }
             },
@@ -180,7 +207,7 @@ var series = [];
             },
             itemStyle: {
                 normal: {
-                    color: color[i]
+                    color: colorSet[i]
                 }
             },
             data: [{
@@ -195,35 +222,34 @@ var series = [];
 });
 
 //////
-    series.push(
-        // the "line"
-        {
-            name: 'debug',
-            type: 'lines',
-            zlevel: 1,
-            effect: {
-                show: true,
-                period: 6, //1, //6, // speed
-                trailLength: 0.7,
-                color:  backgroundColor, //'#000', // '#fff',
-                symbolSize: 3
-            },
-            lineStyle: {
-                normal: {
-                    color: backgroundColor,  //'#000',//color[i],
-                    width: 1,
-                    curveness: 0,
-                    opacity: 0,
-                }
-            },
-            data: [{
-                fromName: 'inf_far',
-                toName: 'inf_far_2',
-                coords: [[-1 * MAX_INT, -1 * MAX_INT], [-1 * MAX_INT + 1, -1 * MAX_INT + 1]]
-            }]
-        }
-    );
-    series.push(
+series.push(
+    {
+        name: 'debug',
+        type: 'lines',
+        zlevel: 1,
+        effect: {
+            show: true,
+            period: 6, //1, //6, // speed
+            trailLength: 0.7,
+            color:  backgroundColor, //'#000', // '#fff',
+            symbolSize: 3
+        },
+        lineStyle: {
+            normal: {
+                color: backgroundColor,  //'#000',//color[i],
+                width: 1,
+                curveness: 0,
+                opacity: 0,
+            }
+        },
+        data: [{
+            fromName: 'inf_far',
+            toName: 'inf_far_2',
+            coords: [[-1 * MAX_INT, -1 * MAX_INT], [-1 * MAX_INT + 1, -1 * MAX_INT + 1]]
+        }]
+    }
+);
+series.push(
         {
             //
             name: 'debug',
@@ -240,15 +266,6 @@ var series = [];
                     curveness: 0
                 }
             },
-            /*
-            tooltip: {
-                formatter: function (params) {
-                    // console.log(params)
-                    return 'hello I am the line from ' + params.data.fromName + " to " + params.data.toName;
-                }
-            },
-            */
-
             data: [{
                 fromName: 'inf_far',
                 toName: 'inf_far_2',
@@ -261,24 +278,25 @@ var series = [];
         {
             name:'漏斗图',
             type:'funnel',
-            left: 60,//'10%',
+            left: 5,//'10%',
             zlevel: 2,
-            top: 60,
+            top: 5,
             //x2: 80,
             // bottom: 60,
-            width: 50,//'80%',
-            height: 50,
+            width: 60,//'80%',
+            height: 100,
             // height: {totalHeight} - y - y2,
             min: 0,
             max: 100,
             minSize: '0%',
             maxSize: '100%',
+            funnelAlign: 'left',
             sort: 'descending',
             gap: 2,
             label: {
                 normal: {
                     show: true,
-                    position: 'left'//'inside'
+                    position: 'right'//'inside'
                 },
                 emphasis: {
                     textStyle: {
@@ -297,7 +315,7 @@ var series = [];
             },
             itemStyle: {
                 normal: {
-                    borderColor: '#fff',
+                    borderColor:  backgroundColor_rgb, //backgroundColor, //'#fff',
                     borderWidth: 1
                 }
             },
@@ -312,21 +330,12 @@ var series = [];
                 trigger: 'item',
                 formatter: "{a} <br/>{b} : {c}%"
             },
+            color: colorSet
         }
     );
 
-var option = {
+option = {
     backgroundColor: backgroundColor,
-    /*
-    title : {
-        text: '点线图测试效果',
-        subtext: '基于世界地图',
-        left: 'center',
-        textStyle : {
-            color: '#fff'
-        }
-    },
-    */
     tooltip : {
         trigger: 'item',
     },
@@ -334,12 +343,12 @@ var option = {
         orient: 'vertical',
         top: 'bottom',
         left: 'right',
-        //data:['北京 Top10', '上海 Top10', '广州 Top10'],
+        //data:['corner_bottomleft Top10', 'corner_topright Top10', 'corner_topleft Top10'],
         data:[
-            {name: '北京 Top10', icon: 'circle'}, 
-            {name: '上海 Top10', textStyle: {color: 'red'}}, 
-            {name: '广州 Top10'},
-            {name: '漏斗图'}
+            {name: 'Group1 Top10', icon: 'circle'}, 
+            {name: 'Group2 Top10', textStyle: {color: 'red'}}, 
+            {name: 'Group3 Top10'},
+            {name: '分层统计'} // '漏斗图'
         ],
 
         textStyle: {
@@ -347,9 +356,9 @@ var option = {
         },
         selectedMode: 'multiple', //'single'
         selected: {
-            '北京 Top10': false,
-            '上海 Top10': false,
-            '广州 Top10': true
+            'corner_bottomleft Top10': false,
+            'corner_topright Top10': false,
+            'corner_topleft Top10': true
         },
         // 使用字符串模板，模板变量为图例名称 {name}
         // formatter: 'Legend {name}'

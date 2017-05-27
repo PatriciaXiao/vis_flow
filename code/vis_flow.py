@@ -15,7 +15,13 @@ def test():
 
 @app.route('/')
 def flow():
-	return render_template('income_flow.html')
+	temp = datetime.datetime.now() # today
+	time = temp + datetime.timedelta(days=-1) #yesterday
+	year = time.year
+	month = time.month
+	day = time.day
+	return render_template('income_flow.html', \
+		year = year, month = month, day = day)
 
 if __name__ == '__main__':
 	app.run()
