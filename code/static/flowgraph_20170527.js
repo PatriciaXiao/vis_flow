@@ -1,10 +1,7 @@
-
-var nav_bar_height = $('#nav_bar').height();
 var dom = document.getElementById("container");
-dom.style.top = nav_bar_height + "px";
-dom.style.height = ($(window).height() - nav_bar_height) + "px"; // set width to be "100%" - 40px;
+dom.style.top = "40px";
+dom.style.height = ($(window).height() - 40) + "px";//"100%";
 dom.style.width = ($(window).width()) + "px";
-
 
 var myChart = echarts.init(dom);
 var app = {};

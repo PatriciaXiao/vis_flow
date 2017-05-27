@@ -15,3 +15,4 @@ set up server:
 http://www.jianshu.com/p/be9dd421fb8d
 
 http://echarts.baidu.com/demo.html#scatter-map-brush
+https://segmentfault.com/q/1010000007136219
