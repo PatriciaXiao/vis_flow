@@ -311,11 +311,12 @@ var series = [];
             }]
     });
     // add another line
+    
     series.push(
         {
             name: '北京 Top10',
             type: 'lines',
-            zlevel: 2, //1,
+            zlevel: 1,
             effect: {
                 show: true,
                 period: 1, //6, // speed of ray
@@ -331,16 +332,19 @@ var series = [];
                 }
             },
             data: [{
+                fromName: '常州',
+                toName: '重庆',
                 coords: [[119.4543,31.5582], [107.7539,30.1904]]
             }]
         }
     );
+    
     series.push(
         // the "line"
         {
             name: '北京 Top10',
             type: 'lines',
-            zlevel: 1, //2,
+            zlevel: 2,
             // symbol: ['none', 'arrow'],
             symbol: ['none', 'none'],
             symbolSize: 10,
@@ -354,13 +358,38 @@ var series = [];
             lineStyle: {
                 normal: {
                     color: color[0],
+                    width: 1,
+                    opacity: 0.6,
+                    curveness: 0.2
+                }
+            },
+            data: [{
+                fromName: '常州',
+                toName: '重庆',
+                coords: [[119.4543,31.5582], [107.7539,30.1904]]
+            }]
+        }
+    );
+    //////
+    series.push(
+        // the "line"
+        {
+            name: 'debug',
+            type: 'lines',
+            zlevel: 1, //2,
+            // symbol: ['none', 'arrow'],
+            symbol: ['none', 'none'],
+            symbolSize: 10,
+            lineStyle: {
+                normal: {
+                    color: backgroundColor,
                     width: 2, //1,
                     opacity: 0.6,
                     curveness: 0.2
                 }
             },
             data: [{
-                coords: [[119.4543,31.5582], [107.7539,30.1904]]
+                coords: [[0, 0], [0, 0]]
             }]
         }
     );
