@@ -399,7 +399,7 @@ var series = [];
         {
             name:'漏斗图',
             type:'funnel',
-            left: 0,//'10%',
+            left: 60,//'10%',
             zlevel: 2,
             top: 60,
             //x2: 80,
@@ -416,7 +416,7 @@ var series = [];
             label: {
                 normal: {
                     show: true,
-                    position: 'inside'
+                    position: 'left'//'inside'
                 },
                 emphasis: {
                     textStyle: {
