@@ -13,7 +13,7 @@ def test():
 	return render_template('test.html')
 
 
-@app.route('/')
+@app.route('/', methods=['POST', 'GET'])
 def flow():
 	temp = datetime.datetime.now() # today
 	time = temp + datetime.timedelta(days=-1) #yesterday

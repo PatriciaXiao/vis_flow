@@ -2,20 +2,68 @@
 <html style="height: 100%">
    <head>
        <meta charset="utf-8">
+       <link rel="stylesheet" type="text/css" media="screen" href={{url_for('static', filename="bootstrap-datetimepicker.min.css")}}>
+       <link rel="stylesheet" href={{url_for('static', filename="bootstrap-combined.min.css")}}>
+       
        <link rel="stylesheet" href={{url_for('static', filename="bootstrap.min.css")}}>
        <link rel="stylesheet" href={{url_for('static', filename="income_flow.css")}}>
        <script type="text/javascript" src={{url_for('static', filename="echarts.min.js")}}></script>
        <script type="text/javascript" src={{url_for('static', filename="coordinateMap.js")}}></script>
        <script type="text/javascript" src={{url_for('static', filename="jquery.min.js")}}></script>
        <script type="text/javascript" src={{url_for('static', filename="bootstrap.min.js")}}></script>
+       <script type="text/javascript" src={{url_for('static', filename="bootstrap-datetimepicker.min.js")}}></script>
    </head>
    <body>
         <nav id = "nav_bar" class="navbar navbar-default navbar-fixed-top" role="navigation">
             <div class="navbar-header">
                 <a class="navbar-brand" href="#">{{year}}年{{month}}月{{day}}日用户行为轨迹</a>
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            选择日期
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <form id=date_form method=post action="{{ url_for('flow') }}">
+                                    <div id="datetimepicker" class="input-append date" style="margin-top:10px;margin-bottom:10px;">
+                                      <label>&nbsp;&nbsp;选择日期:&nbsp;&nbsp;</label>
+                                      <input id = "show_date" type="text" style="height:25px;" name=selected_date></input>
+                                      <span class="add-on" style="height:25px;">
+                                        <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                                      </span>
+                                      <label>&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                      <button id="fat-btn" class="btn btn-primary" data-loading-text="正在提交..." type="button">  提交日期 </button>
+                                      <label>&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                    </div>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                </ul>
             </div>
         </nav>
+        <script type="text/javascript">
+            $('#datetimepicker').datetimepicker({
+                format: 'MM/dd/yyyy',
+                language: 'en',
+                pickDate: true,
+                pickTime: false,
+                inputMask: true
+            });
+            $(function() {
+                $("#fat-btn").click(function(){
+                    $(this).button('loading').delay(600).queue(function() {
+                        submit_date(tmp_date={year:{{year}},month:{{month}},day:{{day}}})
+                        $(this).button('reset');
+                        $(this).dequeue();
+                    });
+                });
+            }); 
+        </script>
         <div id="container"></div>
+            <script type="text/javascript" src={{url_for('static', filename="timepicker_functions.js")}}></script>
             <script type="text/javascript" src={{url_for('static', filename="flowgraph.js")}}></script>
         </body>
 
