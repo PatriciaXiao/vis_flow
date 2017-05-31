@@ -16,3 +16,7 @@ http://www.jianshu.com/p/be9dd421fb8d
 
 http://echarts.baidu.com/demo.html#scatter-map-brush
 https://segmentfault.com/q/1010000007136219
+
+events in echarts
+http://echarts.baidu.com/api.html#events.%E9%BC%A0%E6%A0%87%E4%BA%8B%E4%BB%B6
+http://echarts.baidu.com/tutorial.html#ECharts%20%E4%B8%AD%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%92%8C%E8%A1%8C%E4%B8%BA

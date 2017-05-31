@@ -69,8 +69,14 @@ var convertData = function (data) {
     return res;
 };
 // find the location of the nodes
-function locateNodes() {
-    //
+function locateNodes(raw_input) {
+    // 
+    var coords = {};
+    var n_rows = 6;
+    var n_cols = 5;
+    var row_interval = (coordRange.top - coordRange.bottom) / ((n_rows - 1) * 1.0);
+    var col_interval = (coordRange.right - coordRange.left) / ((n_cols - 1) * 1.0);
+    return coords;
 }
 function drawNodes() {
     // console.log(nodes.length);
@@ -109,6 +115,67 @@ function drawNodes() {
                 };
             })
         });
+    });
+}
+
+function drawLinks() {
+    links.forEach(function (item, i) {
+        series.push(
+            // the "flow"
+            {
+                name: item[0],
+                type: 'lines',
+                zlevel: 1,
+                effect: {
+                    show: true,
+                    period: 6, //1, //6, // speed
+                    trailLength: 0.7,
+                    color: '#000', // '#fff',
+                    symbolSize: 3
+                },
+                lineStyle: {
+                    normal: {
+                        color: colorSet[i],
+                        width: 0,
+                        curveness: 0.2
+                    }
+                },
+                data: convertData(item[1]) //debug(item[1])//convertData(item[1])
+            },
+            // the "line"
+            {
+                name: item[0],
+                type: 'lines',
+                zlevel: 2,
+                // symbol: ['none', 'arrow'],
+                symbol: ['none', 'none'],
+                symbolSize: 10,
+                effect: {
+                    show: true,
+                    period: 6,
+                    trailLength: 0,
+                    symbol: myPath,
+                    symbolSize: 15
+                },
+                lineStyle: {
+                    normal: {
+                        color: colorSet[i],
+                        width: 1,
+                        opacity: 0.6,
+                        curveness: 0.2
+                    }
+                },
+                tooltip: {
+                    formatter: function (params) {
+                        // console.log(params)
+                        return 'hello I am the line from ' + params.data.fromName + " to " + params.data.toName + " with value " + params.data.value;
+                    }
+                },
+                data: convertData(item[1])
+            }
+            
+        );
+        
     });
 }
 
@@ -155,141 +222,7 @@ var Group3 = [
 
 links = [['Group1', Group1], ['Group2', Group2], ['Group3', Group3]];
 
-links.forEach(function (item, i) {
-    series.push(
-        // the "flow"
-        {
-            name: item[0] + ' Top10',
-            type: 'lines',
-            zlevel: 1,
-            effect: {
-                show: true,
-                period: 6, //1, //6, // speed
-                trailLength: 0.7,
-                color: '#000', // '#fff',
-                symbolSize: 3
-            },
-            lineStyle: {
-                normal: {
-                    color: colorSet[i],
-                    width: 0,
-                    curveness: 0.2
-                }
-            },
-            data: convertData(item[1]) //debug(item[1])//convertData(item[1])
-        },
-        // the "line"
-        {
-            name: item[0] + ' Top10',
-            type: 'lines',
-            zlevel: 2,
-            // symbol: ['none', 'arrow'],
-            symbol: ['none', 'none'],
-            symbolSize: 10,
-            effect: {
-                show: true,
-                period: 6,
-                trailLength: 0,
-                symbol: myPath,
-                symbolSize: 15
-            },
-            lineStyle: {
-                normal: {
-                    color: colorSet[i],
-                    width: 1,
-                    opacity: 0.6,
-                    curveness: 0.2
-                }
-            },
-            tooltip: {
-                formatter: function (params) {
-                    // console.log(params)
-                    return 'hello I am the line from ' + params.data.fromName + " to " + params.data.toName + " with value " + params.data.value;
-                }
-            },
-            data: convertData(item[1])
-        },
-        // the "node"
-        /*
-        
-        {
-            name: item[0] + ' Top10',
-            type: 'effectScatter',
-            coordinateSystem: 'geo', //'polar',
-            zlevel: 2,
-            rippleEffect: {
-                brushType: 'stroke'
-            },
-            label: {
-                normal: {
-                    show: true,
-                    position: 'right',
-                    // formatter: '{b}'
-                    // formatter: '{b}' // {a} refers to corner_bottomleft Top 10 here
-                    formatter: '{b}'
-                }
-            },
-            symbolSize: function (val) {
-                return val[2] / 8;
-            },
-            itemStyle: {
-                normal: {
-                    color: colorSet[i]
-                }
-            },
-            data: debug(item[1].map(function (dataItem) {
-                return {
-                    name: dataItem[1].name,
-                    value: coordMap[dataItem[1].name].concat([dataItem[1].value]) //coordMap[dataItem[1].name].concat([dataItem[1].value])
-                };
-            })
-            )
-        }
-        */
-        
-        
-        
-    );
-    
-
-});
-
-//////////////////////////////////
-/*
-series.push(
-
-        {
-            name: 'Group1 Top10',
-            type: 'effectScatter',
-            coordinateSystem: 'geo', //'polar',
-            zlevel: 2,
-            rippleEffect: {
-                brushType: 'stroke'
-            },
-            label: {
-                normal: {
-                    show: true,
-                    position: 'right',
-                    // formatter: '{b}'
-                    // formatter: '{b}' // {a} refers to corner_bottomleft Top 10 here
-                    formatter: 'hello'
-                }
-            },
-            symbolSize: function (val) {
-                return 20;
-            },
-            itemStyle: {
-                normal: {
-                    color: '#ffffff'
-                }
-            },
-            data: debug([{
-                name: 'hello',
-                value: coordMap['center'].concat([20])
-            }])
-        });
-*/
-//////////////////////////////////
+drawLinks();
 
 //////
 series.push(
@@ -413,11 +346,12 @@ option = {
         orient: 'vertical',
         top: 'bottom',
         left: 'right',
-        //data:['corner_bottomleft Top10', 'corner_topright Top10', 'corner_topleft Top10'],
+        // ECharts 提供的标记类型包括 'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow'
+        // 也可以通过 'image://url' 设置为图片，其中 url 为图片的链接。
         data:[
-            {name: 'Group1 Top10', icon: 'circle'}, 
-            {name: 'Group2 Top10', textStyle: {color: 'red'}}, 
-            {name: 'Group3 Top10'},
+            {name: 'Group1', icon: 'circle'}, 
+            {name: 'Group2', icon: 'roundRect', textStyle: {color: 'red'}}, 
+            {name: 'Group3'},
             {name: '分层统计'} // '漏斗图'
         ],
 
@@ -426,9 +360,10 @@ option = {
         },
         selectedMode: 'multiple', //'single'
         selected: {
-            'corner_bottomleft Top10': false,
-            'corner_topright Top10': false,
-            'corner_topleft Top10': true
+            'Group1': false,
+            'Group2': false,
+            'Group3': true,
+            '分层统计': false
         },
         // 使用字符串模板，模板变量为图例名称 {name}
         // formatter: 'Legend {name}'
