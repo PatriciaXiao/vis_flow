@@ -76,7 +76,7 @@ function drawNodes() {
     // console.log(nodes.length);
     nodes.forEach( function(item, i){
         series.push({
-            name: nodesInfo[item].group_name,
+            name: item[0],
             type: 'effectScatter',
             coordinateSystem: 'geo', //'polar',
             zlevel: 2,
@@ -87,7 +87,11 @@ function drawNodes() {
                 normal: {
                     show: true,
                     position: 'right',
-                    formatter: nodesInfo[item].label_name
+                    formatter: function (val) {
+                        // console.log(val)
+                        // return nodeInfo[val.name].label_name; //equivalent
+                        return val.value[3];
+                    }
                 }
             },
             symbolSize: function (val) {
@@ -98,23 +102,36 @@ function drawNodes() {
                     color: colorSet[i]
                 }
             },
-            data: [{
-                name: item,
-                value: coordMap[item].concat([nodesInfo[item].value])
-            }]
+            data: item[1].map(function (dataItem) {
+                return {
+                    name: dataItem,
+                    value: coordMap[dataItem].concat([nodesInfo[dataItem].value, nodesInfo[dataItem].label_name]) //coordMap[dataItem[1].name].concat([dataItem[1].value])
+                };
+            })
         });
     });
 }
 
 // prepare data
+
 nodesInfo = {
-    'corner_bottomleft': {label_name: 'BottomLeftNode', group_name: 'BottomLeft', value: 30},
-    'corner_bottomright': {label_name: 'BottomRightNode', group_name: 'BottomRight', value: 50},
-    'corner_topleft': {label_name: 'TopLeftNode', group_name: 'TopLeft', value: 70},
-    'corner_topright': {label_name: 'TopRightNode', group_name: 'TopRight', value: 80},
-    'center': {label_name: 'CenterNode', group_name: 'Center', value: 10}
+    'corner_bottomleft': {label_name: 'BottomLeftNode', value: 30},
+    'corner_bottomright': {label_name: 'BottomRightNode', value: 50},
+    'corner_topleft': {label_name: 'TopLeftNode', value: 70},
+    'corner_topright': {label_name: 'TopRightNode', value: 80},
+    'center': {label_name: 'CenterNode', value: 10}
 };
+/*
 nodes = ['corner_bottomleft', 'corner_bottomright', 'corner_topleft', 'corner_topright', 'center'];
+*/
+var Group1_nodes = ['corner_bottomleft', 'corner_bottomright'];
+var Group2_nodes = ['corner_topleft', 'corner_topright'];
+var Group3_nodes = ['center'];
+nodes = [
+    ['Group1', Group1_nodes],
+    ['Group2', Group2_nodes],
+    ['Group3', Group3_nodes]
+];
 drawNodes();
 
 var Group1 = [
