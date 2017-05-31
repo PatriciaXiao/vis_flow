@@ -73,9 +73,8 @@ function locateNodes() {
     //
 }
 function drawNodes() {
-    console.log(nodes.length);
+    // console.log(nodes.length);
     nodes.forEach( function(item, i){
-        //
         series.push({
             name: nodesInfo[item].group_name,
             type: 'effectScatter',
@@ -99,10 +98,10 @@ function drawNodes() {
                     color: colorSet[i]
                 }
             },
-            data: {
+            data: [{
                 name: item,
-                value: coordMap[item].concat(nodesInfo[item].value)
-            }
+                value: coordMap[item].concat([nodesInfo[item].value])
+            }]
         });
     });
 }
@@ -110,10 +109,13 @@ function drawNodes() {
 // prepare data
 nodesInfo = {
     'corner_bottomleft': {label_name: 'BottomLeftNode', group_name: 'BottomLeft', value: 30},
-    'corner_bottomright': {label_name: 'BottomRightNode', group_name: 'BottomRight', value: 50}
+    'corner_bottomright': {label_name: 'BottomRightNode', group_name: 'BottomRight', value: 50},
+    'corner_topleft': {label_name: 'TopLeftNode', group_name: 'TopLeft', value: 70},
+    'corner_topright': {label_name: 'TopRightNode', group_name: 'TopRight', value: 80},
+    'center': {label_name: 'CenterNode', group_name: 'Center', value: 10}
 };
-nodes = ['corner_bottomleft', 'corner_bottomright'];
-// drawNodes();
+nodes = ['corner_bottomleft', 'corner_bottomright', 'corner_topleft', 'corner_topright', 'center'];
+drawNodes();
 
 var Group1 = [
     [{name:'corner_bottomleft'}, {name:'corner_topright',value:95}],
@@ -134,9 +136,9 @@ var Group3 = [
     [{name:'corner_topleft'},{name:'corner_bottomleft',value:30}],
 ];
 
-mergedGroups = [['Group1', Group1], ['Group2', Group2], ['Group3', Group3]];
+links = [['Group1', Group1], ['Group2', Group2], ['Group3', Group3]];
 
-mergedGroups.forEach(function (item, i) {
+links.forEach(function (item, i) {
     series.push(
         // the "flow"
         {
@@ -191,7 +193,7 @@ mergedGroups.forEach(function (item, i) {
             data: convertData(item[1])
         },
         // the "node"
-        
+        /*
         
         {
             name: item[0] + ' Top10',
@@ -226,6 +228,7 @@ mergedGroups.forEach(function (item, i) {
             })
             )
         }
+        */
         
         
         
@@ -235,6 +238,7 @@ mergedGroups.forEach(function (item, i) {
 });
 
 //////////////////////////////////
+/*
 series.push(
 
         {
@@ -267,6 +271,7 @@ series.push(
                 value: coordMap['center'].concat([20])
             }])
         });
+*/
 //////////////////////////////////
 
 //////
