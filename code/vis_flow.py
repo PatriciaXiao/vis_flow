@@ -15,11 +15,18 @@ def test():
 
 @app.route('/', methods=['POST', 'GET'])
 def flow():
-	temp = datetime.datetime.now() # today
-	time = temp + datetime.timedelta(days=-1) #yesterday
-	year = time.year
-	month = time.month
-	day = time.day
+	if request.method == 'POST':
+		requested_date = request.form['selected_date']
+		time_info = request.form['selected_date'].split('/')
+		year = int(time_info[2])
+		month = int(time_info[0])
+		day = int(time_info[1])
+	else:
+		temp = datetime.datetime.now() # today
+		time = temp + datetime.timedelta(days=-1) #yesterday
+		year = time.year
+		month = time.month
+		day = time.day
 	return render_template('income_flow.html', \
 		year = year, month = month, day = day)
 
