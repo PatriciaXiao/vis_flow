@@ -81,27 +81,33 @@ var nodesNames = {
     4000: "监控",
     5000: "账户",
     5100: "发票",
-    6000: "购买VIP"
+    5200: "购买VIP",
+    7000: "支付"
 
 };
 var nodesList = {};
 var rawData = {
     nodes: [
-        [{id: 1000, value: 100}, {id: 1100, value: 100}, {id: 1200, value: 100}, {id: 1300, value: 100}, {id: 1400, value: 100}],
+        [{id: 1000, value: 100}, {id: 1100, value: 100}, {id: 1200, value: 100}, {id: 1300, value: 100}, {id: 1500, value: 100}],
         [{id: 2000, value: 100}],
-        [{id: 3000, value: 100}],
-        [{id: 4000, value: 100}],
-        [{id: 5000, value: 100}],
-        [null, {id: 6000, value: 100}] // indent could be changed like this
-        // [{id: 6000, value: 100}]
+        [{id: 3000, value: 100}, null, null, {id: 1400, value: 100}],
+        // [{id: 4000, value: 100}],
+        [0, {id: 4000, value: 100}],// indent could be changed like this
+        [{id: 5000, value: 100}, {id: 5100, value: 100}],
+        [null, {id: 5200, value: 100}, null, null, {id: 7000, value: 100}] 
     ],
     links: [
         {from: 1000, to: 1100, value: 100},
         {from: 1100, to: 1200, value: 100},
         {from: 1200, to: 1300, value: 100},
         {from: 1300, to: 1400, value: 100},
+        {from: 1300, to: 1500, value: 100},
+        {from: 1400, to: 7000, value: 100},
         {from: 2000, to: 1300, value: 100},
-        {from: 3000, to: 1300, value: 100}
+        {from: 3000, to: 1300, value: 100},
+        {from: 5000, to: 5100, value: 100},
+        {from: 5000, to: 5200, value: 100},
+        {from: 5200, to: 7000, value: 100},
     ]
 };
 function setNodes(raw_input_nodes) {
@@ -134,6 +140,7 @@ function setNodes(raw_input_nodes) {
         for (var i = 0; i < raw_input_nodes.length; i++) { //according to cols
             if (raw_input_nodes[i].length <= j || raw_input_nodes[i][j] == null) continue;
             else cnt_item += 1;
+            if (raw_input_nodes[i][j] == 0) continue;
             
 
             // coords
