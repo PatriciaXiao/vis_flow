@@ -18,13 +18,9 @@ var myPath = 'image://static/test_image.jpg';
 var backgroundColor = '#444455';//'#404a59';
 var backgroundColor_rgb = '#445';
 var colorSet = ['#a6c84c', '#ffa022', '#46bee9', '#e9967a', '#ffd700', '#dda0dd'];
-var nodesInfo = {};
-var linkeInfo = {};
-var nodes = [];
-var links = [];
 
 // for debugging purpose
-var DEBUG = true;//false;
+var DEBUG = false;
 function debug(val){
     if (DEBUG) console.log(val);
     return val;
@@ -40,7 +36,6 @@ var option = {};
 // coordinate range [(-200, 200), (-70, 90)]
 // mapping data
 var coordMap = {
-    // for debugging purpose
     'corner_topright': [coordRange.right, coordRange.top], //[121.4648,31.2891],
     'corner_bottomleft': [coordRange.left,coordRange.bottom], //[116.4551,40.2539],
     'corner_topleft': [coordRange.left, coordRange.top],//[113.5107,23.2196],
@@ -51,6 +46,14 @@ var coordMap = {
 // coordMap['center'] = [(coordRange.left + coordRange.right) / 2. , (coordRange.top + coordRange.bottom) / 2.];
 
 // functions 
+var mergeGroups = function(lst_groups) {
+    var res = [];
+    var nGroups = lst_groups.length;
+    for (var i = 0; i < nGroups; i++) {
+        res.push(lst_groups[i]);
+    }
+    return res;
+}
 var convertData = function (data) {
     var res = [];
     for (var i = 0; i < data.length; i++) {
@@ -68,53 +71,8 @@ var convertData = function (data) {
     }
     return res;
 };
-// find the location of the nodes
-function locateNodes() {
-    //
-}
-function drawNodes() {
-    console.log(nodes.length);
-    nodes.forEach( function(item, i){
-        //
-        series.push({
-            name: nodesInfo[item].group_name,
-            type: 'effectScatter',
-            coordinateSystem: 'geo', //'polar',
-            zlevel: 2,
-            rippleEffect: {
-                brushType: 'stroke'
-            },
-            label: {
-                normal: {
-                    show: true,
-                    position: 'right',
-                    formatter: nodesInfo[item].label_name
-                }
-            },
-            symbolSize: function (val) {
-                return val[2] / 8;
-            },
-            itemStyle: {
-                normal: {
-                    color: colorSet[i]
-                }
-            },
-            data: {
-                name: item,
-                value: coordMap[item].concat(nodesInfo[item].value)
-            }
-        });
-    });
-}
 
 // prepare data
-nodesInfo = {
-    'corner_bottomleft': {label_name: 'BottomLeftNode', group_name: 'BottomLeft', value: 30},
-    'corner_bottomright': {label_name: 'BottomRightNode', group_name: 'BottomRight', value: 50}
-};
-nodes = ['corner_bottomleft', 'corner_bottomright'];
-// drawNodes();
-
 var Group1 = [
     [{name:'corner_bottomleft'}, {name:'corner_topright',value:95}],
     [{name:'corner_bottomleft'}, {name:'corner_topleft',value:90}],
@@ -191,8 +149,6 @@ mergedGroups.forEach(function (item, i) {
             data: convertData(item[1])
         },
         // the "node"
-        
-        
         {
             name: item[0] + ' Top10',
             type: 'effectScatter',
@@ -218,29 +174,21 @@ mergedGroups.forEach(function (item, i) {
                     color: colorSet[i]
                 }
             },
-            data: debug(item[1].map(function (dataItem) {
+            data: item[1].map(function (dataItem) {
                 return {
                     name: dataItem[1].name,
-                    value: coordMap[dataItem[1].name].concat([dataItem[1].value]) //coordMap[dataItem[1].name].concat([dataItem[1].value])
+                    value: debug(coordMap[dataItem[1].name].concat([dataItem[1].value])) //coordMap[dataItem[1].name].concat([dataItem[1].value])
                 };
             })
-            )
         }
         
-        
-        
     );
-    
-
-});
-
-//////////////////////////////////
-series.push(
-
-        {
-            name: 'Group1 Top10',
+    // add the original node // not necessary
+    series.push({
+         // the "node"
+            name: item[0] + ' Top10', // item[0]
             type: 'effectScatter',
-            coordinateSystem: 'geo', //'polar',
+            coordinateSystem: 'geo',//'grid', //'geo', //'polar',
             zlevel: 2,
             rippleEffect: {
                 brushType: 'stroke'
@@ -251,23 +199,27 @@ series.push(
                     position: 'right',
                     // formatter: '{b}'
                     // formatter: '{b}' // {a} refers to corner_bottomleft Top 10 here
-                    formatter: 'hello'
+                    formatter: item[0]//'{a}'
                 }
             },
             symbolSize: function (val) {
-                return 20;
+                return 100 / 8; //val[2] / 8;
             },
             itemStyle: {
                 normal: {
-                    color: '#ffffff'
+                    color: colorSet[i]
                 }
             },
-            data: debug([{
-                name: 'hello',
-                value: coordMap['center'].concat([20])
-            }])
-        });
-//////////////////////////////////
+            data: [{
+                    name: item[0],
+                    value: coordMap[item[0]]//.concat(100)
+            }]
+    });
+    
+
+    
+
+});
 
 //////
 series.push(
