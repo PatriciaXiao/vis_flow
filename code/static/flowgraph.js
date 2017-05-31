@@ -85,14 +85,14 @@ var nodesNames = {
     7000: "支付"
 
 };
-var nodesList = {};
+var Groups = ["用户交互项目", "用户行为轨迹"] // nodes, links
 var rawData = {
     nodes: [
         [{id: 1000, value: 100}, {id: 1100, value: 100}, {id: 1200, value: 100}, {id: 1300, value: 100}, {id: 1500, value: 100}],
         [{id: 2000, value: 100}],
         [{id: 3000, value: 100}, null, null, {id: 1400, value: 100}],
-        // [{id: 4000, value: 100}],
-        [0, {id: 4000, value: 100}],// indent could be changed like this
+        [{id: 4000, value: 100}],
+        // [0, {id: 4000, value: 100}],// indent could be changed like this
         [{id: 5000, value: 100}, {id: 5100, value: 100}],
         [null, {id: 5200, value: 100}, null, null, {id: 7000, value: 100}] 
     ],
@@ -114,7 +114,7 @@ function setNodes(raw_input_nodes) {
     // 
     var coords = {};
     var nodes_info = {};
-    var nodes = [];
+    var nodes = [["用户交互项目", []], ["用户行为轨迹", []]];
     var n_cols = 0;
     var col_length_lst = [];
     for (var i = 0; i < raw_input_nodes.length; i++){
@@ -132,7 +132,6 @@ function setNodes(raw_input_nodes) {
     // console.log(col_length_lst)
     var interval = (coordRange.right - coordRange.left) / ((n_cols - 1) * 1.0);
     var y_total = (coordRange.top - coordRange.bottom);
-    nodes = [['Group1', []], ['Group2', []], ['Group3', []]];
     for (var j = 0; j < n_cols; j++){ // according to rows
         var cnt_item = 0;
         var delta_x = interval * j;
@@ -161,7 +160,7 @@ function setNodes(raw_input_nodes) {
     return [nodes_info, coords, nodes];
 }
 function setLinks(raw_input_links) {
-    var links = [['Group1', []], ['Group2', []], ['Group3', []]];
+    var links = [["用户交互项目", []], ["用户行为轨迹", []]];
     for(var i = 0; i < raw_input_links.length; i++) {
         links[1][1].push([
             { name: nodesNames[raw_input_links[i].from] },
@@ -170,21 +169,6 @@ function setLinks(raw_input_links) {
     }
     return [links];
 }
-
-/*
-var nodes_settings = setNodes(rawData.nodes);
-nodesInfo = nodes_settings[0];
-coordMap = nodes_settings[1];
-// nodes = nodes_settings[2];
-nodes = [['Group1', ['查公司', '查老板', '查关系']]]
-var links_settings = setLinks(rawData.links);
-// links = links_settings[0]
-
-// console.log(nodes);
-// console.log(links);
-console.log(nodesInfo)
-console.log(coordMap)
-*/
 
 function drawNodes() {
     // console.log(nodes.length);
@@ -196,6 +180,11 @@ function drawNodes() {
             zlevel: 2,
             rippleEffect: {
                 brushType: 'stroke'
+            },
+            tooltip: {
+                formatter: function(val) {
+                    return val.value[2];
+                }
             },
             label: {
                 normal: {
@@ -288,24 +277,7 @@ function drawLinks() {
 }
 
 // prepare data
-/*
-nodesInfo = {
-    'corner_bottomleft': {label_name: 'BottomLeftNode', value: 30},
-    'corner_bottomright': {label_name: 'BottomRightNode', value: 50},
-    'corner_topleft': {label_name: 'TopLeftNode', value: 70},
-    'corner_topright': {label_name: 'TopRightNode', value: 80},
-    'center': {label_name: 'CenterNode', value: 10}
-};
 
-var Group1_nodes = ['corner_bottomleft', 'corner_bottomright'];
-var Group2_nodes = ['corner_topleft', 'corner_topright'];
-var Group3_nodes = ['center'];
-nodes = [
-    ['Group1', Group1_nodes],
-    //['Group2', Group2_nodes],
-    //['Group3', Group3_nodes]
-];
-*/
 var nodes_settings = setNodes(rawData.nodes);
 nodesInfo = nodes_settings[0];
 coordMap = nodes_settings[1];
@@ -314,31 +286,7 @@ nodes = nodes_settings[2];
 var links_settings = setLinks(rawData.links);
 links = links_settings[0]
 
-/*
-var Group1 = [
-    [{name:'corner_bottomleft'}, {name:'corner_topright',value:95}],
-    [{name:'corner_bottomleft'}, {name:'corner_topleft',value:90}],
-    [{name:'corner_bottomleft'}, {name:'corner_bottomright',value:20}],
-    [{name:'corner_bottomleft'}, {name:'center',value:10}]
-];
-
-var Group2 = [
-    [{name:'corner_topright'},{name:'corner_topleft',value:80}],
-    [{name:'corner_topright'},{name:'corner_bottomright',value:50}],
-    [{name:'corner_topright'},{name:'corner_bottomleft',value:30}],
-];
-
-var Group3 = [
-    [{name:'corner_topleft'},{name:'corner_bottomright',value:70}],
-    [{name:'corner_topleft'},{name:'center',value:40}],
-    [{name:'corner_topleft'},{name:'corner_bottomleft',value:30}],
-];
-
-links = [['Group1', Group1], ['Group2', Group2], ['Group3', Group3]];
-*/
-
-console.log(nodes)
-console.log(links)
+// draw data
 drawNodes();
 drawLinks();
 
@@ -395,10 +343,10 @@ series.push(
         }
     );
 //////
-    series.push(
-        {
-            name:'漏斗图',
-            type:'funnel',
+series.push(
+    {
+        name:'分层统计',
+        type:'funnel',
             left: 5,//'10%',
             zlevel: 2,
             top: 5,
@@ -453,7 +401,7 @@ series.push(
             },
             color: colorSet
         }
-    );
+);
 
 option = {
     backgroundColor: backgroundColor,
@@ -467,10 +415,9 @@ option = {
         // ECharts 提供的标记类型包括 'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow'
         // 也可以通过 'image://url' 设置为图片，其中 url 为图片的链接。
         data:[
-            {name: 'Group1', icon: 'circle'}, 
-            {name: 'Group2', icon: 'roundRect', textStyle: {color: 'red'}}, 
-            {name: 'Group3'},
-            {name: '分层统计'} // '漏斗图'
+            {name: '用户交互项目', icon: 'circle', textStyle: {color: 'yellow'}}, 
+            {name: '用户行为轨迹', icon: 'circle', textStyle: {color: 'yellow'}}, 
+            {name: '分层统计', icon: 'roundRect'} // '漏斗图'
         ],
 
         textStyle: {
@@ -478,10 +425,9 @@ option = {
         },
         selectedMode: 'multiple', //'single'
         selected: {
-            'Group1': false,
-            'Group2': false,
-            'Group3': true,
-            '分层统计': false
+            '用户交互项目': true,
+            '用户行为轨迹': true,
+            '分层统计': true
         },
         // 使用字符串模板，模板变量为图例名称 {name}
         // formatter: 'Legend {name}'
