@@ -467,5 +467,7 @@ if (option && typeof option === "object") {
     myChart.on('click', function (params) {
         // 控制台打印数据的名称
         console.log(params);
+        console.log("clicked: " + params.componentSubType + ", data: ");
+        console.log(params.data);
     });
 }
