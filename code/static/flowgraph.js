@@ -69,15 +69,116 @@ var convertData = function (data) {
     return res;
 };
 // find the location of the nodes
-function locateNodes(raw_input) {
+var nodesNames = {
+    1000: "查公司",
+    1100: "搜索页",
+    1200: "结果",
+    1300: "公司详情页",
+    1400: "信用报告",
+    1500: "关注",
+    2000: "查老板",
+    3000: "查关系",
+    4000: "监控",
+    5000: "账户",
+    5100: "发票",
+    6000: "购买VIP"
+
+};
+var nodesList = {};
+var rawData = {
+    nodes: [
+        [{id: 1000, value: 100}, {id: 1100, value: 100}, {id: 1200, value: 100}, {id: 1300, value: 100}, {id: 1400, value: 100}],
+        [{id: 2000, value: 100}],
+        [{id: 3000, value: 100}],
+        [{id: 4000, value: 100}],
+        [{id: 5000, value: 100}],
+        [null, {id: 6000, value: 100}] // indent could be changed like this
+        // [{id: 6000, value: 100}]
+    ],
+    links: [
+        {from: 1000, to: 1100, value: 100},
+        {from: 1100, to: 1200, value: 100},
+        {from: 1200, to: 1300, value: 100},
+        {from: 1300, to: 1400, value: 100},
+        {from: 2000, to: 1300, value: 100},
+        {from: 3000, to: 1300, value: 100}
+    ]
+};
+function setNodes(raw_input_nodes) {
     // 
     var coords = {};
-    var n_rows = 6;
-    var n_cols = 5;
-    var row_interval = (coordRange.top - coordRange.bottom) / ((n_rows - 1) * 1.0);
-    var col_interval = (coordRange.right - coordRange.left) / ((n_cols - 1) * 1.0);
-    return coords;
+    var nodes_info = {};
+    var nodes = [];
+    var n_cols = 0;
+    var col_length_lst = [];
+    for (var i = 0; i < raw_input_nodes.length; i++){
+        if(raw_input_nodes[i].length > n_cols) {
+            n_cols = raw_input_nodes[i].length;
+        }
+    }
+    for (var i = 0; i < n_cols; i++) {
+        col_length_lst.push(0)
+        for (var j = 0; j < raw_input_nodes.length; j++) {
+            if (raw_input_nodes[j].length > i && raw_input_nodes[j][i] != null)
+                col_length_lst[i] += 1;
+        }
+    }
+    // console.log(col_length_lst)
+    var interval = (coordRange.right - coordRange.left) / ((n_cols - 1) * 1.0);
+    var y_total = (coordRange.top - coordRange.bottom);
+    nodes = [['Group1', []], ['Group2', []], ['Group3', []]];
+    for (var j = 0; j < n_cols; j++){ // according to rows
+        var cnt_item = 0;
+        var delta_x = interval * j;
+        var delta_y = (y_total / (col_length_lst[j] * 1.0 + 1.0));
+        for (var i = 0; i < raw_input_nodes.length; i++) { //according to cols
+            if (raw_input_nodes[i].length <= j || raw_input_nodes[i][j] == null) continue;
+            else cnt_item += 1;
+            
+
+            // coords
+            coords[nodesNames[raw_input_nodes[i][j].id]] = [
+                coordRange.left + delta_x,
+                coordRange.top - delta_y * cnt_item
+            ];
+            // nodes info
+            nodes_info[nodesNames[raw_input_nodes[i][j].id]] = {
+                label_name: 'Label:' + nodesNames[raw_input_nodes[i][j].id],
+                value: raw_input_nodes[i][j].value
+            };
+            // nodes
+            nodes[0][1].push(nodesNames[raw_input_nodes[i][j].id]);
+        }
+    }
+
+    return [nodes_info, coords, nodes];
 }
+function setLinks(raw_input_links) {
+    var links = [['Group1', []], ['Group2', []], ['Group3', []]];
+    for(var i = 0; i < raw_input_links.length; i++) {
+        links[1][1].push([
+            { name: nodesNames[raw_input_links[i].from] },
+            { name: nodesNames[raw_input_links[i].to], value: raw_input_links[i].value }
+        ]);
+    }
+    return [links];
+}
+
+/*
+var nodes_settings = setNodes(rawData.nodes);
+nodesInfo = nodes_settings[0];
+coordMap = nodes_settings[1];
+// nodes = nodes_settings[2];
+nodes = [['Group1', ['查公司', '查老板', '查关系']]]
+var links_settings = setLinks(rawData.links);
+// links = links_settings[0]
+
+// console.log(nodes);
+// console.log(links);
+console.log(nodesInfo)
+console.log(coordMap)
+*/
+
 function drawNodes() {
     // console.log(nodes.length);
     nodes.forEach( function(item, i){
@@ -180,7 +281,7 @@ function drawLinks() {
 }
 
 // prepare data
-
+/*
 nodesInfo = {
     'corner_bottomleft': {label_name: 'BottomLeftNode', value: 30},
     'corner_bottomright': {label_name: 'BottomRightNode', value: 50},
@@ -188,19 +289,25 @@ nodesInfo = {
     'corner_topright': {label_name: 'TopRightNode', value: 80},
     'center': {label_name: 'CenterNode', value: 10}
 };
-/*
-nodes = ['corner_bottomleft', 'corner_bottomright', 'corner_topleft', 'corner_topright', 'center'];
-*/
+
 var Group1_nodes = ['corner_bottomleft', 'corner_bottomright'];
 var Group2_nodes = ['corner_topleft', 'corner_topright'];
 var Group3_nodes = ['center'];
 nodes = [
     ['Group1', Group1_nodes],
-    ['Group2', Group2_nodes],
-    ['Group3', Group3_nodes]
+    //['Group2', Group2_nodes],
+    //['Group3', Group3_nodes]
 ];
-drawNodes();
+*/
+var nodes_settings = setNodes(rawData.nodes);
+nodesInfo = nodes_settings[0];
+coordMap = nodes_settings[1];
+nodes = nodes_settings[2];
+// nodes = [['Group1', ['查公司', '查老板', '查关系']]]
+var links_settings = setLinks(rawData.links);
+links = links_settings[0]
 
+/*
 var Group1 = [
     [{name:'corner_bottomleft'}, {name:'corner_topright',value:95}],
     [{name:'corner_bottomleft'}, {name:'corner_topleft',value:90}],
@@ -221,7 +328,11 @@ var Group3 = [
 ];
 
 links = [['Group1', Group1], ['Group2', Group2], ['Group3', Group3]];
+*/
 
+console.log(nodes)
+console.log(links)
+drawNodes();
 drawLinks();
 
 //////
@@ -330,7 +441,7 @@ series.push(
                 {value: 100, name: '展现'}
             ],
             tooltip: {
-                trigger: 'item',
+                trigger: 'item', // '{a}': series name, '{b}': data item name, '{c}': data item value
                 formatter: "{a} <br/>{b} : {c}%"
             },
             color: colorSet
@@ -399,5 +510,9 @@ option = {
 };
 if (option && typeof option === "object") {
     myChart.setOption(option, true);
-    console.log(myChart)
+    // console.log(myChart)
+    myChart.on('click', function (params) {
+        // 控制台打印数据的名称
+        console.log(params);
+    });
 }
