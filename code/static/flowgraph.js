@@ -469,6 +469,6 @@ if (option && typeof option === "object") {
         console.log(params);
         console.log("clicked: " + params.componentSubType + ", data: ");
         console.log(params.data);
-        //this.setOption({series:[]});
+        // myChart.setOption({series:[]}, true); // it works
     });
 }
